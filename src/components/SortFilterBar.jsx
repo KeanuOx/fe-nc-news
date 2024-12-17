@@ -1,11 +1,9 @@
-import React from "react";
-
-const SortFilterBar = ({ setSortBy, setFilterBy }) => {
+const SortFilterBar = ({ setSortBy, setFilterBy, filterBy, sortBy }) => {
   return (
     <div className="sort-filter-bar">
       <label>
         Sort By:
-        <select onChange={(e) => setSortBy(e.target.value)}>
+        <select onChange={(e) => setSortBy(e.target.value)} value={sortBy}>
           <option value="created_at">Date</option>
           <option value="votes">Votes</option>
           <option value="comment_count">Comments</option>
@@ -14,7 +12,7 @@ const SortFilterBar = ({ setSortBy, setFilterBy }) => {
 
       <label>
         Filter By Topic:
-        <select onChange={(e) => setFilterBy(e.target.value)}>
+        <select onChange={(e) => setFilterBy(e.target.value)} value={filterBy}>
           <option value="">All</option>
           <option value="coding">Coding</option>
           <option value="cooking">Cooking</option>
@@ -25,4 +23,4 @@ const SortFilterBar = ({ setSortBy, setFilterBy }) => {
   );
 };
 
-export default SortFilterBar;
+export default SortFilterBar
