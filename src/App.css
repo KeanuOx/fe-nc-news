@@ -113,4 +113,63 @@ h2 {
   margin: 0.5rem 0;
   color: #555;
 }
+.comment-card {
+  background: #EFE9F4;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 5px;
+}
+
+.comment-card p {
+  margin: 0.25rem 0;
+  color: #333;
+}
+
+.comments-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.home-page {
+  text-align: center;
+  padding: 1rem;
+}
+
+h1 {
+  color: #08B2E3;
+  margin-bottom: 1.5rem;
+}
+
+.featured-articles, .topics-list {
+  margin: 2rem 0;
+}
+
+.featured-articles .articles-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.topics-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.topics-list li {
+  margin: 0.5rem 0;
+}
+
+.topics-list a {
+  color: #EE6352;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.topics-list a:hover {
+  color: #08B2E3;
+}
 
