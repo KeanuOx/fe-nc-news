@@ -173,3 +173,21 @@ h1 {
   color: #08B2E3;
 }
 
+.single-article button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #08B2E3;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.single-article button:hover {
+  background-color: #EE6352;
+}
+
+.single-article p {
+  margin: 0.5rem 0;
+}
