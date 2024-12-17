@@ -16,12 +16,12 @@ const ArticleList = () => {
         let filteredArticles = data.articles;
 
         if (filterBy) {
-          filteredArticles = filteredArticles.filter(
+         filteredArticles = filteredArticles.filter(
             (article) => article.topic === filterBy
           );
         }
 
-        filteredArticles.sort((a, b) => b[sortBy] - a[sortBy]);
+        filteredArticles = filteredArticles.toSorted((a, b) => b[sortBy] - a[sortBy]);
 
         setArticles(filteredArticles);
         setIsLoading(false);

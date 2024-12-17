@@ -1,9 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ArticleCard = ({ article }) => {
-  const navigate = useNavigate();
-
   return (
     <div className="article-card">
       <img
@@ -16,12 +14,9 @@ const ArticleCard = ({ article }) => {
       <p>{new Date(article.created_at).toLocaleDateString()}</p>
       <p>Comments: {article.comment_count}</p>
       <p>👍 {article.votes} Votes</p>
-      <button
-        onClick={() => navigate(`/articles/${article.article_id}`)}
-        className="read-more-button"
-      >
+      <Link to={`/articles/${article.article_id}`} className="read-more-button">
         Read More
-      </button>
+      </Link>
     </div>
   );
 };
