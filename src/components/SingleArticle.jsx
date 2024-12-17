@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById, getCommentsByArticleId } from "../api";
+import { getArticleById, patchArticleVotes, getCommentsByArticleId } from "../api";
 import CommentCard from "./CommentCard";
 
 const SingleArticle = () => {
   const { article_id } = useParams();
   const [article, setArticle] = useState(null);
-  const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     Promise.all([
       getArticleById(article_id),
-      getCommentsByArticleId(article_id)
+      getCommentsByArticleId(article_id),
     ])
       .then(([articleData, commentsData]) => {
-        setArticle(articleData.article);
-        setComments(commentsData);
+        setArticle({ ...articleData.article, comments: commentsData });
         setIsLoading(false);
       })
       .catch(() => {
@@ -26,8 +25,24 @@ const SingleArticle = () => {
       });
   }, [article_id]);
 
+  const handleVote = (incVotes) => {
+    setArticle((currentArticle) => ({
+      ...currentArticle,
+      votes: currentArticle.votes + incVotes,
+    }));
+    setError(null);
+
+    patchArticleVotes(article_id, incVotes).catch(() => {
+      setArticle((currentArticle) => ({
+        ...currentArticle,
+        votes: currentArticle.votes - incVotes,
+      }));
+      setError("Error!");
+    });
+  };
+
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error!</p>;
+  if (isError) return <p>Error loading article.</p>;
 
   return (
     <div className="single-article">
@@ -40,16 +55,18 @@ const SingleArticle = () => {
         className="article-image"
       />
       <p>{article.body}</p>
-      <p>👍 {article.votes} Votes</p>
+      <p>
+        👍 Votes: {article.votes}
+        <button onClick={() => handleVote(1)}>+1</button>
+        <button onClick={() => handleVote(-1)}>-1</button>
+      </p>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
       <h3>Comments</h3>
       <div className="comments-container">
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <CommentCard key={comment.comment_id} comment={comment} />
-          ))
-        ) : (
-          <p>No comments yet. Be the first to comment!</p>
-        )}
+        {article.comments.map((comment) => (
+          <CommentCard key={comment.comment_id} comment={comment} />
+        ))}
       </div>
     </div>
   );

@@ -14,20 +14,24 @@ const ArticleList = () => {
 
   useEffect(() => {
     const topicParam = searchParams.get("topic");
-    if (topicParam) setFilterBy(topicParam);
+    if (topicParam) {
+      setFilterBy(topicParam);
+    }
   }, [searchParams]);
-
+  
   useEffect(() => {
-    setIsLoading(true);
-    getArticles(sortBy, filterBy)
-      .then((data) => {
-        setArticles(data.articles);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsError(true);
-        setIsLoading(false);
-      });
+    if (filterBy !== undefined) {
+      setIsLoading(true);
+      getArticles(sortBy, filterBy)
+        .then((data) => {
+          setArticles(data.articles);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsError(true);
+          setIsLoading(false);
+        });
+    }
   }, [sortBy, filterBy]);
 
   if (isLoading) return <p>Loading articles...</p>;
