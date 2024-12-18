@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById, patchArticleVotes, getCommentsByArticleId } from "../api";
-import CommentCard from "./CommentCard";
+import { getArticleById } from "../api";
+import CommentList from "./CommentList";
 
 const SingleArticle = () => {
   const { article_id } = useParams();
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    Promise.all([
-      getArticleById(article_id),
-      getCommentsByArticleId(article_id),
-    ])
-      .then(([articleData, commentsData]) => {
-        setArticle({ ...articleData.article, comments: commentsData });
+    getArticleById(article_id)
+      .then(({ article }) => {
+        setArticle(article);
         setIsLoading(false);
       })
       .catch(() => {
@@ -25,23 +21,7 @@ const SingleArticle = () => {
       });
   }, [article_id]);
 
-  const handleVote = (incVotes) => {
-    setArticle((currentArticle) => ({
-      ...currentArticle,
-      votes: currentArticle.votes + incVotes,
-    }));
-    setError(null);
-
-    patchArticleVotes(article_id, incVotes).catch(() => {
-      setArticle((currentArticle) => ({
-        ...currentArticle,
-        votes: currentArticle.votes - incVotes,
-      }));
-      setError("Error!");
-    });
-  };
-
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p>Loading article...</p>;
   if (isError) return <p>Error loading article.</p>;
 
   return (
@@ -55,19 +35,10 @@ const SingleArticle = () => {
         className="article-image"
       />
       <p>{article.body}</p>
-      <p>
-        👍 Votes: {article.votes}
-        <button onClick={() => handleVote(1)}>+1</button>
-        <button onClick={() => handleVote(-1)}>-1</button>
-      </p>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <p>👍 Votes: {article.votes}</p>
 
       <h3>Comments</h3>
-      <div className="comments-container">
-        {article.comments.map((comment) => (
-          <CommentCard key={comment.comment_id} comment={comment} />
-        ))}
-      </div>
+      <CommentList article_id={article_id} />
     </div>
   );
 };
