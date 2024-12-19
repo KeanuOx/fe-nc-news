@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById } from "../api";
+import { getArticleById, patchArticleVotes } from "../api";
 import CommentList from "./CommentList";
 
 const SingleArticle = () => {
@@ -8,6 +8,7 @@ const SingleArticle = () => {
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getArticleById(article_id)
@@ -21,7 +22,23 @@ const SingleArticle = () => {
       });
   }, [article_id]);
 
-  if (isLoading) return <p>Loading article...</p>;
+  const handleVote = (incVotes) => {
+    setArticle((currentArticle) => ({
+      ...currentArticle,
+      votes: currentArticle.votes + incVotes,
+    }));
+    setError(false);
+
+    patchArticleVotes(article_id, incVotes).catch(() => {
+      setArticle((currentArticle) => ({
+        ...currentArticle,
+        votes: currentArticle.votes - incVotes,
+      }));
+      setError(true);
+    });
+  };
+
+  if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error loading article.</p>;
 
   return (
@@ -35,7 +52,11 @@ const SingleArticle = () => {
         className="article-image"
       />
       <p>{article.body}</p>
-      <p>👍 Votes: {article.votes}</p>
+      <p>
+        👍 Votes: {article.votes}
+        <button onClick={() => handleVote(1)}>+1</button>
+        <button onClick={() => handleVote(-1)}>-1</button>
+      </p>
 
       <h3>Comments</h3>
       <CommentList article_id={article_id} />

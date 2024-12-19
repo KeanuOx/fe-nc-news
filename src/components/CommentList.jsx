@@ -56,7 +56,7 @@ const CommentList = ({ article_id }) => {
         </button>
       </form>
       {comments.map((comment) => (
-        <CommentCard key={comment.comment_id} comment={comment} />
+        <CommentCard key={comment.comment_id} comment={comment} setComments={setComments} />
       ))}
     </div>
   );

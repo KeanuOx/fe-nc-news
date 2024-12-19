@@ -39,3 +39,7 @@ export const postComment = (article_id, commentData) => {
     .then((response) => {
       return response.data });
 };
+
+export const deleteComment = (comment_id) => {
+  return ncNewsApi.delete(`/comments/${comment_id}`);
+};
