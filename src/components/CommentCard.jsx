@@ -9,17 +9,15 @@ const CommentCard = ({ comment, setComments }) => {
 
     setIsDeleting(true);
     setComments((prevComments) =>
-      prevComments.filter((comment) => comment.comment_id !== comment.comment_id)
+      prevComments.filter((c) => c.comment_id !== comment.comment_id)
     );
 
     deleteComment(comment.comment_id)
       .then(() => {
-        console.log("Comment deleted successfully");
         setIsDeleting(false);
       })
       .catch(() => {
         setComments((prevComments) => [comment, ...prevComments]);
-        alert("Failed to delete comment. Please try again.");
         setIsDeleting(false);
       });
   };
