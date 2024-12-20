@@ -8,39 +8,50 @@ const ArticleList = () => {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [sortBy, setSortBy] = useState("created_at");
-  const [filterBy, setFilterBy] = useState("");
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const topicParam = searchParams.get("topic");
-    if (topicParam) {
-      setFilterBy(topicParam);
-    }
+    const sort_by = searchParams.get("sort_by") || "created_at";
+    const filter_by = searchParams.get("filter_by") || "";
+
+    setIsLoading(true);
+    setIsError(false);
+
+    getArticles({ sort_by, filter_by })
+      .then((data) => {
+        setArticles(data.articles);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsError(true);
+        setIsLoading(false);
+      });
   }, [searchParams]);
-  
-  useEffect(() => {
-    if (filterBy !== undefined) {
-      setIsLoading(true);
-      getArticles(sortBy, filterBy)
-        .then((data) => {
-          setArticles(data.articles);
-          setIsLoading(false);
-        })
-        .catch(() => {
-          setIsError(true);
-          setIsLoading(false);
-        });
-    }
-  }, [sortBy, filterBy]);
 
-  if (isLoading) return <p>Loading articles...</p>;
+  if (isLoading)
+    return (
+      <div className="loading-container">
+        <p>Loading articles...</p>
+      </div>
+    );
+
   if (isError) return <p>Error loading articles. Please try again.</p>;
 
   return (
     <div className="article-list">
       <h2>Articles</h2>
-      <SortFilterBar setSortBy={setSortBy} setFilterBy={setFilterBy} filterBy={filterBy} sortBy={sortBy} />
+      <SortFilterBar
+        setSortBy={(sortBy) => {
+          setSearchParams({ ...Object.fromEntries(searchParams), sort_by: sortBy });
+        }}
+        setFilterBy={(filterBy) => {
+          const params = { ...Object.fromEntries(searchParams), filter_by: filterBy };
+          if (!filterBy) delete params.filter_by;
+          setSearchParams(params);
+        }}
+        filterBy={searchParams.get("filter_by") || ""}
+        sortBy={searchParams.get("sort_by") || "created_at"}
+      />
       <div className="articles-container">
         {articles.map((article) => (
           <ArticleCard key={article.article_id} article={article} />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getArticles } from "../api";
 import { Link } from "react-router-dom";
 import ArticleCard from "./ArticleCard";
+import "../App.css";
 
 const HomePage = () => {
   const [featuredArticles, setFeaturedArticles] = useState([]);
@@ -12,23 +13,27 @@ const HomePage = () => {
   useEffect(() => {
     getArticles()
       .then((data) => {
-        const featured = data.articles.slice(0, 3);
-        setFeaturedArticles(featured);
+        setFeaturedArticles(data.articles.slice(0, 3));
         setIsLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setIsLoading(false);
-        setIsError(true)
+        setIsError(true);
       });
   }, []);
 
-  if (isLoading) return <p>Loading featured content...</p>;
-  if(isError) return <p>Error!</p>
+  if (isLoading)
+    return (
+      <div className="loading-container">
+        <p>Loading featured content...</p>
+      </div>
+    );
+
+  if (isError) return <p>Error loading articles.</p>;
 
   return (
     <div className="home-page">
       <h1>Welcome to NC News</h1>
-
       <section className="featured-articles">
         <h2>Featured Articles</h2>
         <div className="articles-container">
@@ -37,20 +42,17 @@ const HomePage = () => {
           ))}
         </div>
       </section>
-
       <section className="topics-list">
         <h2>Topics</h2>
         <ul>
           {topics.map((topic) => (
             <li key={topic}>
-              <Link to={`/articles?topic=${topic}`}>{topic}</Link>
+              <Link to={`/articles?filter_by=${topic}`}>{topic}</Link>
             </li>
           ))}
         </ul>
       </section>
     </div>
-
-    
   );
 };
 

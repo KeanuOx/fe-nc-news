@@ -38,8 +38,15 @@ const SingleArticle = () => {
     });
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading)
+    return (
+      <div className="loading-container">
+        <p>Loading...</p>
+      </div>
+    );
+
   if (isError) return <p>Error loading article.</p>;
+  if (error) return <p>Error adding vote.</p>
 
   return (
     <div className="single-article">
